@@ -1,13 +1,13 @@
 import React from "react";
 
 export default function App() {
-  // ---- YOUR PROJECTS ----
+  // ------------------ PROJECTS ------------------
   const projects = [
     {
       title: "Global Financial Health Score Dashboard",
       repo: "global-financial-health-score-dashboard",
       desc:
-        "Exploratory data analysis + dashboard for a composite financial-health score; tidy data, feature scaling, and clear visualizations.",
+        "Built a composite scoring system and dashboard to benchmark countries using cleaned, scaled indicators; produced ranked comparisons and trend insights.",
       img: "/projects/financial-health.png", // optional screenshot
       tags: ["Python", "Pandas", "Visualization"],
     },
@@ -15,7 +15,7 @@ export default function App() {
       title: "Ocean Depth Profile",
       repo: "ocean-depth-profile",
       desc:
-        "Analyzed ocean depth profiles and created plots to understand bathymetry patterns and gradients.",
+        "Analyzed bathymetry profiles and gradients; created Matplotlib visualizations to understand seabed structure and depth transitions.",
       img: "/projects/ocean-depth.png",
       tags: ["Python", "NumPy", "Matplotlib"],
     },
@@ -23,39 +23,93 @@ export default function App() {
       title: "Orbital Flyby Simulation with Python",
       repo: "Orbital-Flyby-Simulation-with-Python",
       desc:
-        "Numerical simulation of gravitational flybys (EOSC 211) with modular code and simple visual outputs.",
+        "Numerically modeled gravitational flybys; modularized code, plotted trajectories, and examined energy transfer for EOSC 211.",
       img: "/projects/flyby.png",
       tags: ["Python", "Simulation"],
     },
     {
-      title: "Heart Disease – DSCI 100",
+      title: "Heart Disease — DSCI 100",
       repo: "heart-disease-dsci100",
       desc:
-        "Classification project exploring predictors of heart disease; model comparison and basic evaluation.",
+        "Explored risk factors and built classification baselines; compared models and evaluated metrics to understand drivers of heart disease.",
       img: "/projects/heart.png",
       tags: ["R", "Classification"],
     },
     {
-      title: "Wine Quality – STAT 201",
+      title: "Wine Quality — STAT 201",
       repo: "wine-quality-stat201",
       desc:
-        "Red vs. White wine analysis using inference and visualization; compared acidity and quality distributions.",
+        "Compared red vs. white wines with inference and visualization; identified acidity/quality relationships and distributional differences.",
       img: "/projects/wine.png",
       tags: ["R", "ggplot2", "Stats"],
     },
   ];
+
+  // ------------------ SKILLS ------------------
+  const skills = [
+    {
+      group: "Programming & Tools",
+      items: ["Python", "R", "SQL", "Git/GitHub", "LaTeX", "Jupyter"],
+    },
+    {
+      group: "Data Science & ML",
+      items: [
+        "Wrangling",
+        "Visualization",
+        "Regression",
+        "Classification",
+        "Clustering",
+        "Time Series",
+      ],
+    },
+    {
+      group: "Math & Statistics",
+      items: [
+        "Probability",
+        "Hypothesis Testing",
+        "Linear Algebra",
+        "Multivariable Calculus",
+        "Numerical Methods",
+      ],
+    },
+    {
+      group: "BI & Dashboards",
+      items: ["Tableau", "Power BI", "Excel"],
+    },
+    {
+      group: "Software",
+      items: ["React (Vite)", "Vercel Deployment", "Basic AWS/PySpark exposure"],
+    },
+  ];
+
+  // ------------------ HELPERS ------------------
+  const Tag = ({ children }) => (
+    <span className="text-xs px-2 py-0.5 rounded-full border bg-white">
+      {children}
+    </span>
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800">
       {/* NAV */}
       <header className="sticky top-0 z-20 bg-white/80 backdrop-blur border-b">
         <div className="max-w-6xl mx-auto px-5 h-14 flex items-center justify-between">
-          <a href="#" className="font-semibold">Tejas Singh</a>
+          <a href="#" className="font-semibold">
+            Tejas Singh
+          </a>
           <nav className="hidden sm:flex gap-6 text-sm">
-            <a href="#about" className="hover:opacity-80">About</a>
-            <a href="#skills" className="hover:opacity-80">Skills</a>
-            <a href="#projects" className="hover:opacity-80">Projects</a>
-            <a href="#contact" className="hover:opacity-80">Contact</a>
+            <a href="#experience" className="hover:opacity-80">
+              Research
+            </a>
+            <a href="#projects" className="hover:opacity-80">
+              Projects
+            </a>
+            <a href="#skills" className="hover:opacity-80">
+              Skills
+            </a>
+            <a href="#contact" className="hover:opacity-80">
+              Contact
+            </a>
           </nav>
         </div>
       </header>
@@ -73,15 +127,23 @@ export default function App() {
               Tejas Singh
             </h1>
             <p className="mt-3 text-gray-600">
-              Aspiring Data Scientist @ UBC — Python • R • SQL • Visualization •
-              Statistical Modeling
+              Data Science & Quantitative Analysis at UBC — applying{" "}
+              <strong>machine learning</strong>, <strong>statistics</strong>, and{" "}
+              <strong>mathematical modeling</strong> to real-world problems in
+              health, science, and finance.
             </p>
             <div className="mt-5 flex flex-wrap gap-3">
-              <a className="rounded-xl px-4 py-2 text-sm font-semibold bg-black text-white" href="#projects">
+              <a
+                className="rounded-xl px-4 py-2 text-sm font-semibold bg-black text-white"
+                href="#projects"
+              >
                 See Projects
               </a>
-              <a className="rounded-xl px-4 py-2 text-sm font-semibold border" href="#contact">
-                Contact Me
+              <a
+                className="rounded-xl px-4 py-2 text-sm font-semibold border"
+                href="#experience"
+              >
+                Research
               </a>
               <a
                 className="rounded-xl px-4 py-2 text-sm font-semibold border"
@@ -93,7 +155,10 @@ export default function App() {
               </a>
             </div>
             <div className="mt-4 flex flex-wrap gap-3 text-sm">
-              <a href="mailto:tejasxsingh@gmail.com" className="underline underline-offset-4">
+              <a
+                href="mailto:tejasxsingh@gmail.com"
+                className="underline underline-offset-4"
+              >
                 tejasxsingh@gmail.com
               </a>
               <span>•</span>
@@ -118,46 +183,53 @@ export default function App() {
           </div>
         </section>
 
-        {/* ABOUT */}
-        <section id="about" className="py-8">
-          <h2 className="text-2xl font-bold">About Me</h2>
-          <p className="mt-3 leading-relaxed">
-            I’m a detail-oriented UBC student across Computer Science,
-            Mathematics, and Statistics. I love building clean data products,
-            analyzing real-world datasets, and communicating insights with
-            visuals. Comfortable with Python, R, and SQL; experienced with
-            hypothesis testing, regression/classification, and dashboards.
-          </p>
-        </section>
+        {/* RESEARCH & EXPERIENCE */}
+        <section id="experience" className="py-12">
+          <h2 className="text-2xl font-bold mb-6">Research & Experience</h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="p-6 bg-white rounded-2xl border shadow-sm">
+              <h3 className="text-xl font-semibold">
+                Machine Learning Researcher
+              </h3>
+              <p className="text-gray-600 italic">
+                Department of Medicine — Centre for Heart Lung Innovation (HLI),
+                UBC
+              </p>
+              <ul className="list-disc list-inside mt-3 text-sm text-gray-700 space-y-1">
+                <li>
+                  Applied ML to biomedical/clinical datasets for predictive
+                  modeling of health outcomes.
+                </li>
+                <li>
+                  Performed statistical analysis, feature engineering, and
+                  reproducible evaluation pipelines.
+                </li>
+                <li>
+                  Collaborated with researchers to translate results into
+                  actionable insights.
+                </li>
+              </ul>
+            </div>
 
-        {/* SKILLS */}
-        <section id="skills" className="py-8">
-          <h2 className="text-2xl font-bold">Skills</h2>
-          <div className="mt-4 grid sm:grid-cols-2 gap-4">
-            <div className="rounded-2xl border bg-white p-5">
-              <h3 className="font-semibold">Languages & Tools</h3>
-              <p className="mt-2 text-gray-600">
-                Python, R, SQL, Git/GitHub, Tableau, Power BI, Excel
-              </p>
-            </div>
-            <div className="rounded-2xl border bg-white p-5">
-              <h3 className="font-semibold">Data & ML</h3>
-              <p className="mt-2 text-gray-600">
-                Data wrangling, visualization, regression, classification,
-                clustering
-              </p>
-            </div>
-            <div className="rounded-2xl border bg-white p-5">
-              <h3 className="font-semibold">Math & Stats</h3>
-              <p className="mt-2 text-gray-600">
-                Linear algebra, probability, inference, hypothesis testing
-              </p>
-            </div>
-            <div className="rounded-2xl border bg-white p-5">
-              <h3 className="font-semibold">Software</h3>
-              <p className="mt-2 text-gray-600">
-                Data structures, algorithms, software design
-              </p>
+            <div className="p-6 bg-white rounded-2xl border shadow-sm">
+              <h3 className="text-xl font-semibold">
+                Researcher — PDE & Data Science
+              </h3>
+              <p className="text-gray-600 italic">Department of Mathematics, UBC</p>
+              <ul className="list-disc list-inside mt-3 text-sm text-gray-700 space-y-1">
+                <li>
+                  Worked on partial differential equations with applications to{" "}
+                  <strong>cancer modeling</strong> and complex systems.
+                </li>
+                <li>
+                  Studied numerical methods, stability, and computational
+                  simulation in biological settings.
+                </li>
+                <li>
+                  Linked rigorous mathematical analysis with data science for
+                  interpretable models.
+                </li>
+              </ul>
             </div>
           </div>
         </section>
@@ -165,22 +237,43 @@ export default function App() {
         {/* PROJECTS */}
         <section id="projects" className="py-8">
           <h2 className="text-2xl font-bold">Projects</h2>
+          <p className="text-gray-600 mt-2">
+            Selected work spanning dashboards, simulations, and statistical
+            analysis. More on{" "}
+            <a
+              href="https://github.com/tejasxsingh"
+              className="underline underline-offset-4"
+              target="_blank"
+              rel="noreferrer"
+            >
+              GitHub
+            </a>
+            .
+          </p>
+
           <div className="mt-5 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {projects.map((p) => (
-              <article key={p.title} className="rounded-2xl overflow-hidden border bg-white shadow-sm">
+              <article
+                key={p.title}
+                className="rounded-2xl overflow-hidden border bg-white shadow-sm"
+              >
                 {p.img ? (
-                  <img src={p.img} alt={p.title} className="h-36 w-full object-cover" />
-                ) : (
-                  <div className="h-36 w-full bg-gray-200" />
-                )}
+                  <img
+                    src={p.img}
+                    alt={p.title}
+                    className="h-36 w-full object-cover"
+                    onError={(e) => {
+                      // graceful fallback if an image is missing
+                      e.currentTarget.style.display = "none";
+                    }}
+                  />
+                ) : null}
                 <div className="p-4">
                   <h3 className="font-semibold">{p.title}</h3>
                   <p className="mt-1 text-sm text-gray-600">{p.desc}</p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {p.tags.map((t) => (
-                      <span key={t} className="text-xs px-2 py-0.5 rounded-full border bg-white">
-                        {t}
-                      </span>
+                      <Tag key={t}>{t}</Tag>
                     ))}
                   </div>
                   <a
@@ -197,13 +290,31 @@ export default function App() {
           </div>
         </section>
 
+        {/* SKILLS */}
+        <section id="skills" className="py-12">
+          <h2 className="text-2xl font-bold mb-6">Skills</h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {skills.map((s) => (
+              <div key={s.group} className="rounded-2xl border bg-white p-5">
+                <h3 className="font-semibold">{s.group}</h3>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {s.items.map((i) => (
+                    <Tag key={i}>{i}</Tag>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* CONTACT */}
         <section id="contact" className="py-10">
           <h2 className="text-2xl font-bold">Contact</h2>
           <div className="mt-4 rounded-2xl border bg-white p-6">
             <p>
-              I’m open to internships, co-ops, and research roles. The quickest
-              way to reach me is email.
+              I’m currently seeking opportunities in{" "}
+              <strong>Data Science, Analytics, or Research</strong>. Let’s
+              connect.
             </p>
             <div className="mt-4 flex flex-wrap gap-3">
               <a
