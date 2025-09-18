@@ -9,20 +9,20 @@ const COLORS = {
   grid: "#0b1e3915",
 };
 
+/* ----------------------- TAG CHIP ------------------------ */
 const Tag = ({ children }) => (
   <span className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs text-slate-700">
     {children}
   </span>
 );
 
-/* Reveal-on-scroll with safety guards */
+/* -------------------- REVEAL ON SCROLL ------------------- */
 function useReveal() {
   const ref = useRef(null);
   const [inView, setInView] = useState(false);
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (!("IntersectionObserver" in window)) {
-      // If unsupported, just reveal immediately
       setInView(true);
       return;
     }
@@ -37,7 +37,6 @@ function useReveal() {
   }, []);
   return { ref, inView };
 }
-
 const Reveal = ({ children, className = "" }) => {
   const { ref, inView } = useReveal();
   return (
@@ -47,32 +46,9 @@ const Reveal = ({ children, className = "" }) => {
   );
 };
 
-/* Sparkline (pure SVG, no DOM APIs) */
-function AnimatedSparkline() {
-  return (
-    <svg viewBox="0 0 200 60" className="w-full h-12">
-      <defs>
-        <linearGradient id="g1" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="#6366f1" />
-          <stop offset="100%" stopColor="#22c55e" />
-        </linearGradient>
-      </defs>
-      <path
-        d="M0 40 C 20 35, 35 50, 50 32 C 65 20, 80 30, 95 22 C 110 18, 125 36, 140 26 C 155 20, 170 30, 200 22"
-        fill="none"
-        stroke="url(#g1)"
-        strokeWidth="3"
-      >
-        <animate attributeName="stroke-dasharray" from="0,400" to="400,0" dur="2s" repeatCount="indefinite" />
-      </path>
-    </svg>
-  );
-}
-
-/* Background viz with guards for window/document */
+/* ------------------- BACKGROUND VISUAL ------------------- */
 function BackgroundViz() {
-  const [p, setP] = useState(0); // 0..1 scroll progress
-
+  const [p, setP] = useState(0);
   useEffect(() => {
     if (typeof window === "undefined" || typeof document === "undefined") return;
     const onScroll = () => {
@@ -84,15 +60,13 @@ function BackgroundViz() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
   const bars = useMemo(() => {
     const base = [0.2, 0.45, 0.35, 0.65, 0.5, 0.3, 0.75, 0.55];
     return base.map((b, i) => {
-      const phase = Math.sin((p * Math.PI * 2) + i * 0.6) * 0.15;
+      const phase = Math.sin(p * Math.PI * 2 + i * 0.6) * 0.15;
       return Math.min(0.92, Math.max(0.1, b + phase));
     });
   }, [p]);
-
   const translate = Math.round(p * 100);
 
   return (
@@ -100,26 +74,62 @@ function BackgroundViz() {
       aria-hidden
       className="fixed inset-0 -z-10 overflow-hidden pointer-events-none"
       style={{
-        background: `linear-gradient(180deg, #f8fbff 0%, #f1f6fd 40%, #eefcfa 100%)`,
+        background:
+          "linear-gradient(180deg, #f8fbff 0%, #f1f6fd 40%, #eefcfa 100%)",
       }}
     >
+      {/* grid */}
       <svg
         className="absolute inset-0 w-[140%] h-[140%] -left-[20%] -top-[20%]"
         viewBox="0 0 1200 1200"
         style={{ transform: `translateY(${translate * -0.3}px)` }}
       >
         {Array.from({ length: 24 }).map((_, i) => (
-          <line key={`v-${i}`} x1={i * 50} x2={i * 50} y1={0} y2={1200} stroke={COLORS.grid} strokeWidth="1" />
+          <line
+            key={`v-${i}`}
+            x1={i * 50}
+            x2={i * 50}
+            y1={0}
+            y2={1200}
+            stroke={COLORS.grid}
+            strokeWidth="1"
+          />
         ))}
         {Array.from({ length: 24 }).map((_, i) => (
-          <line key={`h-${i}`} y1={i * 50} y2={i * 50} x1={0} x2={1200} stroke={COLORS.grid} strokeWidth="1" />
+          <line
+            key={`h-${i}`}
+            y1={i * 50}
+            y2={i * 50}
+            x1={0}
+            x2={1200}
+            stroke={COLORS.grid}
+            strokeWidth="1"
+          />
         ))}
       </svg>
 
-      <div className="absolute bottom-8 right-6 md:right-12 w-[380px] h-[160px]" style={{ transform: `translateY(${translate * -0.15}px)` }}>
+      {/* bars */}
+      <div
+        className="absolute bottom-8 right-6 md:right-12 w-[380px] h-[160px]"
+        style={{ transform: `translateY(${translate * -0.15}px)` }}
+      >
         <svg viewBox="0 0 380 160" className="w-full h-full">
-          <line x1="20" y1="140" x2="360" y2="140" stroke="#94a3b8" strokeWidth="1" />
-          <line x1="20" y1="20" x2="20" y2="140" stroke="#94a3b8" strokeWidth="1" />
+          <line
+            x1="20"
+            y1="140"
+            x2="360"
+            y2="140"
+            stroke="#94a3b8"
+            strokeWidth="1"
+          />
+          <line
+            x1="20"
+            y1="20"
+            x2="20"
+            y2="140"
+            stroke="#94a3b8"
+            strokeWidth="1"
+          />
           {bars.map((h, i) => {
             const bw = 24;
             const gap = 18;
@@ -127,7 +137,18 @@ function BackgroundViz() {
             const height = h * 110;
             const y = 140 - height;
             const fill = i % 2 ? COLORS.cyan : COLORS.sky;
-            return <rect key={i} x={x} y={y} width={bw} height={height} rx="4" fill={fill} opacity="0.85" />;
+            return (
+              <rect
+                key={i}
+                x={x}
+                y={y}
+                width={bw}
+                height={height}
+                rx="4"
+                fill={fill}
+                opacity="0.85"
+              />
+            );
           })}
         </svg>
       </div>
@@ -135,7 +156,7 @@ function BackgroundViz() {
   );
 }
 
-/* Skill bars with reveal guard */
+/* -------------------- SKILL PROGRESS BARS -------------------- */
 function SkillBars({ data }) {
   const { ref, inView } = useReveal();
   return (
@@ -161,13 +182,145 @@ function SkillBars({ data }) {
   );
 }
 
-/* ---------- DATA (same as before; edit as you like) ---------- */
+/* ---------------- MEANINGFUL TREND (DATASETS) --------------- */
+function CountUpVal({ value, duration = 1200 }) {
+  const [v, setV] = useState(0);
+  useEffect(() => {
+    const start = performance.now();
+    const from = 0,
+      to = value;
+    let raf;
+    const step = (t) => {
+      const p = Math.min(1, (t - start) / duration);
+      setV(Math.round(from + (to - from) * p));
+      if (p < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [value, duration]);
+  return <>{v}</>;
+}
+function TrendMiniChart({ title, unit = "", points }) {
+  const w = 200,
+    h = 60,
+    pad = 6;
+  const min = Math.min(...points),
+    max = Math.max(...points);
+  const sx = (i) => pad + (i * (w - pad * 2)) / (points.length - 1);
+  const sy = (val) => {
+    const r = max - min || 1;
+    const y = h - pad - ((val - min) / r) * (h - pad * 2);
+    return Math.max(pad, Math.min(h - pad, y));
+  };
+  const d = points
+    .map((v, i) => `${i ? "L" : "M"} ${sx(i)} ${sy(v)}`)
+    .join(" ");
+
+  const latest = points[points.length - 1];
+  const start = points[0];
+  const delta = latest - start;
+  const pct = Math.round((delta / (start || 1)) * 100);
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-baseline justify-between">
+        <div className="text-xs text-slate-500">{title}</div>
+        <div className="text-xs text-slate-500">
+          {start}
+          {unit} → <span className="font-medium">{latest}{unit}</span>
+        </div>
+      </div>
+
+      <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-12">
+        <defs>
+          <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#1e3a8a" />
+            <stop offset="100%" stopColor="#06b6d4" />
+          </linearGradient>
+          <linearGradient id="fillGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#06b6d4" stopOpacity="0.18" />
+            <stop offset="100%" stopColor="#06b6d4" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+
+        {/* area */}
+        <path
+          d={`${d} L ${sx(points.length - 1)} ${h - pad} L ${sx(0)} ${h - pad} Z`}
+          fill="url(#fillGrad)"
+        />
+        {/* slower line draw */}
+        <path
+          d={d}
+          fill="none"
+          stroke="url(#lineGrad)"
+          strokeWidth="3"
+          strokeLinecap="round"
+        >
+          <animate
+            attributeName="stroke-dasharray"
+            from="0,400"
+            to="400,0"
+            dur="2.4s"
+            fill="freeze"
+          />
+        </path>
+      </svg>
+
+      <div className="flex items-center gap-2 text-xs">
+        <span
+          className={`px-1.5 py-0.5 rounded ${
+            delta >= 0
+              ? "bg-emerald-100 text-emerald-700"
+              : "bg-rose-100 text-rose-700"
+          }`}
+        >
+          {delta >= 0 ? "▲" : "▼"} {Math.abs(pct)}%
+        </span>
+        <span className="text-slate-500">Latest:</span>
+        <span className="font-semibold">
+          <CountUpVal value={latest} />
+          {unit}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/* ========================= DATA ============================ */
 const skillGroups = [
-  { title: "Programming & Tools", chips: ["Python", "R", "SQL", "Git/GitHub", "LaTeX", "Jupyter"] },
-  { title: "ML & Analytics", chips: ["Pandas", "NumPy", "scikit-learn", "Matplotlib", "Regression", "Classification", "Clustering", "PCA", "A/B Testing", "Statistical Inference"] },
+  {
+    title: "Programming & Tools",
+    chips: ["Python", "R", "SQL", "Git/GitHub", "LaTeX", "Jupyter"],
+  },
+  {
+    title: "ML & Analytics",
+    chips: [
+      "Pandas",
+      "NumPy",
+      "scikit-learn",
+      "Matplotlib",
+      "Regression",
+      "Classification",
+      "Clustering",
+      "PCA",
+      "A/B Testing",
+      "Statistical Inference",
+    ],
+  },
   { title: "BI & Visualization", chips: ["Tableau", "Power BI", "Excel"] },
-  { title: "Math & Methods", chips: ["Probability", "Hypothesis Testing", "Linear Algebra", "Multivariable Calculus", "Numerical Methods", "Time Series", "Econometrics"] },
-  { title: "Data & Cloud", chips: ["ETL (SQL)", "AWS S3 (exposure)", "Vercel", "React (Vite)"] },
+  {
+    title: "Math & Methods",
+    chips: [
+      "Probability",
+      "Hypothesis Testing",
+      "Linear Algebra",
+      "Multivariable Calculus",
+      "Numerical Methods",
+      "Time Series",
+      "Econometrics",
+    ],
+  },
+  { title: "Data & Cloud", chips: ["ETL (SQL)", "AWS S3", "Vercel", "React (Vite)"] },
 ];
 
 const percentSkills = [
@@ -178,40 +331,46 @@ const percentSkills = [
   { name: "Tableau / Power BI", pct: 82 },
 ];
 
+/* ========================= APP ============================ */
 export default function App() {
   const projects = [
     {
       title: "Global Financial Health Score Dashboard",
       repo: "global-financial-health-score-dashboard",
-      desc: "Composite scoring model on country indicators; cleaned, scaled and visualized metrics for ranked comparisons and trends.",
+      desc:
+        "Composite scoring model on country indicators; cleaned, scaled and visualized metrics for ranked comparisons and trends.",
       img: "/projects/financial-health.png",
       tags: ["Python", "Pandas", "Matplotlib", "Tableau"],
     },
     {
       title: "Ocean Depth Profile",
       repo: "ocean-depth-profile",
-      desc: "Analyzed bathymetry profiles/gradients; scientific plots to understand seabed structure and depth transitions.",
+      desc:
+        "Analyzed bathymetry profiles/gradients; scientific plots to understand seabed structure and depth transitions.",
       img: "/projects/ocean-depth.png",
       tags: ["Python", "NumPy", "Matplotlib"],
     },
     {
       title: "Orbital Flyby Simulation with Python",
       repo: "Orbital-Flyby-Simulation-with-Python",
-      desc: "Numerically modeled gravitational flybys; modular code, trajectory plots and energy-transfer analysis (EOSC 211).",
+      desc:
+        "Numerically modeled gravitational flybys; modular code, trajectory plots and energy-transfer analysis (EOSC 211).",
       img: "/projects/flyby.png",
       tags: ["Python", "Simulation"],
     },
     {
       title: "Heart Disease — DSCI 100",
       repo: "heart-disease-dsci100",
-      desc: "Built classification baselines; compared logistic regression, KNN and trees; evaluated with confusion matrix/metrics.",
+      desc:
+        "Built classification baselines; compared logistic regression, KNN and trees; evaluated with confusion matrix/metrics.",
       img: "/projects/heart.png",
       tags: ["R", "Classification", "Inference"],
     },
     {
       title: "Wine Quality — STAT 201",
       repo: "wine-quality-stat201",
-      desc: "Red vs white comparison; hypothesis testing, correlation matrices and boxplots for acidity-quality relationships.",
+      desc:
+        "Red vs white comparison; hypothesis testing, correlation matrices and boxplots for acidity-quality relationships.",
       img: "/projects/wine.png",
       tags: ["R", "ggplot2", "Stats"],
     },
@@ -224,15 +383,29 @@ export default function App() {
       {/* NAV */}
       <header className="sticky top-0 z-20 bg-white/85 backdrop-blur border-b border-slate-200">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5">
-          <a href="#" className="font-semibold tracking-tight" style={{ color: COLORS.ink }}>
+          <a
+            href="#"
+            className="font-semibold tracking-tight"
+            style={{ color: COLORS.ink }}
+          >
             Tejas Singh
           </a>
           <nav className="hidden gap-6 text-sm sm:flex">
-            <a href="#experience" className="hover:opacity-80">Research</a>
-            <a href="#work" className="hover:opacity-80">Work</a>
-            <a href="#projects" className="hover:opacity-80">Projects</a>
-            <a href="#skills" className="hover:opacity-80">Skills</a>
-            <a href="#contact" className="hover:opacity-80">Contact</a>
+            <a href="#experience" className="hover:opacity-80">
+              Research
+            </a>
+            <a href="#work" className="hover:opacity-80">
+              Work
+            </a>
+            <a href="#projects" className="hover:opacity-80">
+              Projects
+            </a>
+            <a href="#skills" className="hover:opacity-80">
+              Skills
+            </a>
+            <a href="#contact" className="hover:opacity-80">
+              Contact
+            </a>
           </nav>
         </div>
       </header>
@@ -241,48 +414,107 @@ export default function App() {
         {/* HERO */}
         <section className="grid items-center gap-8 py-12 sm:py-16 md:grid-cols-[auto,1fr]">
           <Reveal>
-            <img src="/profile.jpg" alt="Tejas Singh" className="h-36 w-36 rounded-2xl object-cover ring-2 ring-white shadow sm:h-44 sm:w-44" />
+            <img
+              src="/profile.jpg"
+              alt="Tejas Singh"
+              className="h-36 w-36 rounded-2xl object-cover ring-2 ring-white shadow sm:h-44 sm:w-44"
+            />
           </Reveal>
           <Reveal>
             <div>
-              <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl" style={{ color: COLORS.ink }}>
+              <h1
+                className="text-4xl font-extrabold tracking-tight sm:text-5xl"
+                style={{ color: COLORS.ink }}
+              >
                 Data Science & Quantitative Analysis
               </h1>
               <p className="mt-3 text-slate-700">
-                UBC student blending <strong>machine learning</strong>, <strong>statistics</strong>, and <strong>mathematical modeling</strong> to produce clean analyses, clear visuals, and deployable data products.
+                UBC student blending <strong>machine learning</strong>,{" "}
+                <strong>statistics</strong>, and{" "}
+                <strong>mathematical modeling</strong> to produce clean
+                analyses, clear visuals, and deployable data products.
               </p>
 
               <div className="mt-5 grid gap-4 md:grid-cols-3">
+                {/* MEANINGFUL TREND CARD */}
                 <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                  <div className="text-xs text-slate-500">Recent Trend</div>
-                  <AnimatedSparkline />
+                  <TrendMiniChart
+                    title="Datasets analyzed (last 12 months)"
+                    points={[2, 3, 4, 4, 5, 6, 6, 8, 10, 12, 14, 16]}
+                  />
                 </div>
+
+                {/* Tooling */}
                 <div className="rounded-2xl border border-slate-200 bg-white p-4">
                   <div className="text-xs text-slate-500">Tooling</div>
                   <div className="mt-2 flex flex-wrap gap-2">
-                    {["Pandas", "NumPy", "scikit-learn", "Matplotlib"].map((t) => <Tag key={t}>{t}</Tag>)}
+                    {["Pandas", "NumPy", "scikit-learn", "Matplotlib"].map(
+                      (t) => (
+                        <Tag key={t}>{t}</Tag>
+                      )
+                    )}
                   </div>
                 </div>
+
+                {/* Dashboards */}
                 <div className="rounded-2xl border border-slate-200 bg-white p-4">
                   <div className="text-xs text-slate-500">Dashboards</div>
                   <div className="mt-2 flex flex-wrap gap-2">
-                    {["Tableau", "Power BI", "Excel"].map((t) => <Tag key={t}>{t}</Tag>)}
+                    {["Tableau", "Power BI", "Excel"].map((t) => (
+                      <Tag key={t}>{t}</Tag>
+                    ))}
                   </div>
                 </div>
               </div>
 
               <div className="mt-5 flex flex-wrap gap-3">
-                <a className="rounded-xl bg-black px-4 py-2 text-sm font-semibold text-white" href="#projects">See Projects</a>
-                <a className="rounded-xl border px-4 py-2 text-sm font-semibold" href="#experience">Research</a>
-                <a className="rounded-xl border px-4 py-2 text-sm font-semibold" href="/resume.pdf" target="_blank" rel="noreferrer">Resume</a>
+                <a
+                  className="rounded-xl bg-black px-4 py-2 text-sm font-semibold text-white"
+                  href="#projects"
+                >
+                  See Projects
+                </a>
+                <a
+                  className="rounded-xl border px-4 py-2 text-sm font-semibold"
+                  href="#experience"
+                >
+                  Research
+                </a>
+                <a
+                  className="rounded-xl border px-4 py-2 text-sm font-semibold"
+                  href="/resume.pdf"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Resume
+                </a>
               </div>
 
               <div className="mt-4 flex flex-wrap gap-3 text-sm">
-                <a href="mailto:tejasxsingh@gmail.com" className="underline underline-offset-4">tejasxsingh@gmail.com</a>
+                <a
+                  href="mailto:tejasxsingh@gmail.com"
+                  className="underline underline-offset-4"
+                >
+                  tejasxsingh@gmail.com
+                </a>
                 <span>•</span>
-                <a href="https://www.linkedin.com/in/tejas-singh-5995a5301" target="_blank" rel="noreferrer" className="underline underline-offset-4">LinkedIn</a>
+                <a
+                  href="https://www.linkedin.com/in/tejas-singh-5995a5301"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline underline-offset-4"
+                >
+                  LinkedIn
+                </a>
                 <span>•</span>
-                <a href="https://github.com/tejasxsingh" target="_blank" rel="noreferrer" className="underline underline-offset-4">GitHub</a>
+                <a
+                  href="https://github.com/tejasxsingh"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="underline underline-offset-4"
+                >
+                  GitHub
+                </a>
               </div>
             </div>
           </Reveal>
@@ -295,9 +527,13 @@ export default function App() {
             <Reveal>
               <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                 <h3 className="text-xl font-semibold">Machine Learning Researcher</h3>
-                <p className="italic text-slate-600">Department of Medicine — Centre for Heart Lung Innovation (HLI), UBC</p>
+                <p className="italic text-slate-600">
+                  Department of Medicine — Centre for Heart Lung Innovation (HLI), UBC
+                </p>
                 <ul className="mt-3 list-inside list-disc space-y-1 text-sm text-slate-700">
-                  <li>Applied ML to biomedical/clinical datasets for predictive modeling of health outcomes.</li>
+                  <li>
+                    Applied ML to biomedical/clinical datasets for predictive modeling of health outcomes.
+                  </li>
                   <li>Feature engineering, statistical testing, and reproducible evaluation pipelines.</li>
                   <li>Presented insights with clear visualizations to support clinical research decisions.</li>
                 </ul>
@@ -308,7 +544,9 @@ export default function App() {
                 <h3 className="text-xl font-semibold">Researcher — PDE & Data Science</h3>
                 <p className="italic text-slate-600">Department of Mathematics, UBC</p>
                 <ul className="mt-3 list-inside list-disc space-y-1 text-sm text-slate-700">
-                  <li>PDE and data science research with applications to <strong>cancer modeling</strong> and complex systems.</li>
+                  <li>
+                    PDE and data science research with applications to <strong>cancer modeling</strong> and complex systems.
+                  </li>
                   <li>Numerical methods, stability analysis, and computational simulation in biological settings.</li>
                   <li>Bridged rigorous mathematical analysis with interpretable, data-driven models.</li>
                 </ul>
@@ -327,8 +565,10 @@ export default function App() {
                 <p className="italic text-slate-600">CanaSelect — Sep 2024 · Dec 2024</p>
                 <ul className="mt-3 list-inside list-disc space-y-1 text-sm text-slate-700">
                   <li>Built SQL-based ETL pipelines to automate ingestion and improve reliability.</li>
-                  <li>Analyzed operational/financial datasets using <strong>Pandas</strong>, <strong>scikit-learn</strong>, and <strong>R</strong> (regression, logistic, PCA, clustering).</li>
-                  <li>Shipped dashboards in <strong>Tableau</strong> and <strong>Power BI</strong>; integrated with <strong>AWS S3</strong> sources and presented insights.</li>
+                  <li>
+                    Analyzed datasets using <strong>Pandas</strong>, <strong>scikit-learn</strong>, and <strong>R</strong> (regression, logistic, PCA, clustering).
+                  </li>
+                  <li>Shipped dashboards in <strong>Tableau</strong> and <strong>Power BI</strong>; integrated with <strong>AWS S3</strong>.</li>
                 </ul>
               </div>
             </Reveal>
@@ -337,8 +577,8 @@ export default function App() {
                 <h3 className="text-lg font-semibold">Analyst Intern (Real Estate)</h3>
                 <p className="italic text-slate-600">M3M Properties — May 2022 · Aug 2022</p>
                 <ul className="mt-3 list-inside list-disc space-y-1 text-sm text-slate-700">
-                  <li>Analyzed pricing/demand trends with <strong>SQL</strong> and <strong>Excel</strong> to identify market opportunities.</li>
-                  <li>Built <strong>Power BI</strong> dashboards and optimized SQL queries; reduced reporting turnaround.</li>
+                  <li>Analyzed pricing/demand trends with <strong>SQL</strong> and <strong>Excel</strong>.</li>
+                  <li>Built <strong>Power BI</strong> dashboards; reduced reporting turnaround.</li>
                 </ul>
               </div>
             </Reveal>
@@ -347,7 +587,7 @@ export default function App() {
                 <h3 className="text-lg font-semibold">General Associate</h3>
                 <p className="italic text-slate-600">Aritzia — Aug 2023 · Sep 2023</p>
                 <ul className="mt-3 list-inside list-disc space-y-1 text-sm text-slate-700">
-                  <li>Supported inventory tracking and prepared weekly reports; improved floor readiness and operations.</li>
+                  <li>Supported inventory tracking and prepared weekly reports; improved operations.</li>
                 </ul>
               </div>
             </Reveal>
@@ -359,7 +599,15 @@ export default function App() {
           <h2 className="text-2xl font-bold">Projects</h2>
           <p className="mt-2 text-slate-600">
             Selected work spanning dashboards, simulations, and statistical analysis. More on{" "}
-            <a href="https://github.com/tejasxsingh" className="underline underline-offset-4" target="_blank" rel="noreferrer">GitHub</a>.
+            <a
+              href="https://github.com/tejasxsingh"
+              className="underline underline-offset-4"
+              target="_blank"
+              rel="noreferrer"
+            >
+              GitHub
+            </a>
+            .
           </p>
 
           <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -371,14 +619,18 @@ export default function App() {
                       src={p.img}
                       alt={p.title}
                       className="h-36 w-full object-cover"
-                      onError={(e) => { e.currentTarget.style.display = "none"; }}
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
                     />
                   ) : null}
                   <div className="p-4">
                     <h3 className="font-semibold">{p.title}</h3>
                     <p className="mt-1 text-sm text-slate-700">{p.desc}</p>
                     <div className="mt-3 flex flex-wrap gap-2">
-                      {p.tags.map((t) => <Tag key={t}>{t}</Tag>)}
+                      {p.tags.map((t) => (
+                        <Tag key={t}>{t}</Tag>
+                      ))}
                     </div>
                     <a
                       href={`https://github.com/tejasxsingh/${p.repo}`}
@@ -411,9 +663,13 @@ export default function App() {
                 <div className="grid grid-cols-2 gap-3">
                   {skillGroups.map((g) => (
                     <div key={g.title}>
-                      <div className="text-sm font-medium text-slate-800">{g.title}</div>
+                      <div className="text-sm font-medium text-slate-800">
+                        {g.title}
+                      </div>
                       <div className="mt-2 flex flex-wrap gap-2">
-                        {g.chips.map((c) => <Tag key={c}>{c}</Tag>)}
+                        {g.chips.map((c) => (
+                          <Tag key={c}>{c}</Tag>
+                        ))}
                       </div>
                     </div>
                   ))}
@@ -428,12 +684,40 @@ export default function App() {
           <h2 className="text-2xl font-bold">Contact</h2>
           <Reveal>
             <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-6">
-              <p>I’m seeking roles in <strong>Data Science, Analytics, and Research</strong>. Let’s connect.</p>
+              <p>
+                I’m seeking roles in <strong>Data Science, Analytics, and Research</strong>. Let’s connect.
+              </p>
               <div className="mt-4 flex flex-wrap gap-3">
-                <a href="mailto:tejasxsingh@gmail.com" className="rounded-xl bg-black px-4 py-2 text-sm font-semibold text-white">Email Me</a>
-                <a href="https://www.linkedin.com/in/tejas-singh-5995a5301" target="_blank" rel="noreferrer" className="rounded-xl border px-4 py-2 text-sm font-semibold">LinkedIn</a>
-                <a href="https://github.com/tejasxsingh" target="_blank" rel="noreferrer" className="rounded-xl border px-4 py-2 text-sm font-semibold">GitHub</a>
-                <a href="/resume.pdf" target="_blank" rel="noreferrer" className="rounded-xl border px-4 py-2 text-sm font-semibold">Resume (PDF)</a>
+                <a
+                  href="mailto:tejasxsingh@gmail.com"
+                  className="rounded-xl bg-black px-4 py-2 text-sm font-semibold text-white"
+                >
+                  Email Me
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/tejas-singh-5995a5301"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-xl border px-4 py-2 text-sm font-semibold"
+                >
+                  LinkedIn
+                </a>
+                <a
+                  href="https://github.com/tejasxsingh"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-xl border px-4 py-2 text-sm font-semibold"
+                >
+                  GitHub
+                </a>
+                <a
+                  href="/resume.pdf"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-xl border px-4 py-2 text-sm font-semibold"
+                >
+                  Resume (PDF)
+                </a>
               </div>
             </div>
           </Reveal>
@@ -444,7 +728,7 @@ export default function App() {
         © {new Date().getFullYear()} Tejas Singh. All rights reserved.
       </footer>
 
-      {/* Minimal CSS for reveal effect */}
+      {/* minimal CSS for reveal */}
       <style>{`
         .reveal { opacity: 0; transform: translateY(12px); transition: opacity .6s ease, transform .6s ease; }
         .reveal.in { opacity: 1; transform: none; }
