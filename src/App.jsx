@@ -562,7 +562,7 @@ export default function App() {
             <Reveal>
               <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                 <h3 className="text-lg font-semibold">Data Science Intern</h3>
-                <p className="italic text-slate-600">CanaSelect — Sep 2024 · Dec 2024</p>
+                <p className="italic text-slate-600">Canaselect (Nishan Transport Inc) — Sep 2024 · Dec 2024</p>
                 <ul className="mt-3 list-inside list-disc space-y-1 text-sm text-slate-700">
                   <li>Built SQL-based ETL pipelines to automate ingestion and improve reliability.</li>
                   <li>
@@ -574,8 +574,8 @@ export default function App() {
             </Reveal>
             <Reveal>
               <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <h3 className="text-lg font-semibold">Analyst Intern (Real Estate)</h3>
-                <p className="italic text-slate-600">M3M Properties — May 2022 · Aug 2022</p>
+                <h3 className="text-lg font-semibold">Data Analyst Intern </h3>
+                <p className="italic text-slate-600">M3M Properties — May 2023 · Aug 2023</p>
                 <ul className="mt-3 list-inside list-disc space-y-1 text-sm text-slate-700">
                   <li>Analyzed pricing/demand trends with <strong>SQL</strong> and <strong>Excel</strong>.</li>
                   <li>Built <strong>Power BI</strong> dashboards; reduced reporting turnaround.</li>
